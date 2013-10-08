@@ -16,7 +16,7 @@ The plugin will use these tokens to get the latest posts/tweets. You can set up 
 At the moment you can use a widget to show up the latest news. Later on their will be possibly a shortcode.
 In the widget you can set up an own "news" text which will be shown before the social media newsbox. And you can choose which social network should be shown at the widget: Facebook, Twitter or both.
 
-This plugin uses the PHP SDK from Facebook and Twitter. Therefor there is no Javascript necessary!
+This plugin uses the PHP SDK from Facebook and Twitter. There is no Javascript necessary!
 
 ### Installation
 
