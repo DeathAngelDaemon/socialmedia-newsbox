@@ -1,0 +1,44 @@
+.smn_container {
+	background: #F0F0F0;
+	margin: 0;
+	padding: 10px;
+}
+
+.smn_intronews {
+	margin: 10px 5px 20px;
+	font-size: 1.1em;
+}
+
+.smn_facebook:before {
+	background: url('img/fb-icon.png') no-repeat;
+	content: 'Facebook';
+	margin: 0;
+	padding: 0 0 0 20px;
+	display: block;
+	font-weight: bold;
+	font-size: 1.05em;
+}
+.smn_facebook {
+	margin: 10px 5px;
+}
+
+.smn_twitter:before {
+	background: url('img/twitter-icon.png') no-repeat;
+	content: 'Twitter';
+	margin: 0;
+	padding: 0 0 0 20px;
+	display: block;
+	font-weight: bold;
+	font-size: 1.05em;
+}
+.smn_twitter {
+	margin: 10px 5px;
+}
+
+.smn_twitter > p {
+	margin-bottom: 10px;
+}
+
+.smn_twitter > p:last-child {
+	margin-bottom: 0;
+}
