@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SocialMedia News\n"
-"POT-Creation-Date: 2013-10-08 13:53+0100\n"
-"PO-Revision-Date: 2013-12-18 15:39+0100\n"
+"POT-Creation-Date: 2014-04-10 13:14+0100\n"
+"PO-Revision-Date: 2014-04-10 13:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: Nimlari <hdroblog@anna-fischer.info>\n"
 "Language: de_DE\n"
@@ -15,91 +15,136 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../smn-admin.php:31
+#: ../smn-admin.php:32
 msgid "The settings are set back to default."
 msgstr "Die Einstellungen wurden zurückgesetzt."
 
-#: ../smn-admin.php:43
+#: ../smn-admin.php:36
+msgid "The caches are now deleted."
+msgstr "Die Cache-Dateien wurden geleert."
+
+#: ../smn-admin.php:58
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
-#: ../smn-admin.php:54
+#: ../smn-admin.php:69
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+#: ../smn-admin.php:70
+msgid "Interval of the cache renewal"
+msgstr "Intervall zur Cache-Erneuerung"
+
+#: ../smn-admin.php:72
 msgid "Settings: Facebook"
 msgstr "Einstellungen: Facebook"
 
-#: ../smn-admin.php:59
+#: ../smn-admin.php:74
+msgid "Post Number"
+msgstr "Anzahl der Beiträge"
+
+#: ../smn-admin.php:78
 msgid "Settings: Twitter"
 msgstr "Einstellungen: Twitter"
 
-#: ../smn-admin.php:61
-msgid "Tweed Number"
-msgstr "Tweet Anzahl"
+#: ../smn-admin.php:80
+msgid "Tweet Number"
+msgstr "Anzahl der Tweets"
 
-#: ../smn-admin.php:76
+#: ../smn-admin.php:95
+msgid "Make some general settings first."
+msgstr "Nimm hier ein paar allgemeine Einstellungen vor."
+
+#: ../smn-admin.php:101
+msgid ""
+"<strong>Info:</strong> time in seconds for the cache renewal. You can go by "
+"steps of 60 sec (= 1 min). Maximum value can be 3600 sec (= 1 hour)"
+msgstr ""
+"<strong>Info:</strong> Zeit in Sekunden für die Cache-Erneuerung. Du kannst "
+"in Schritten von 60 Sek. (= 1 Min.) gehen. Der maximale Wert kann 3600 Sek. "
+"(= 1 Stunde) betragen."
+
+#: ../smn-admin.php:102
+msgid ""
+"Important: The lower the value the more often the cache have to be reloaded, "
+"which increases shortly your site load time."
+msgstr ""
+"Wichtig: Je niedriger der Wert, desto öfter muss der Cache neugeladen "
+"werden, was kurzzeitig deine Seitenladezeit erhöht."
+
+#: ../smn-admin.php:106
 msgid ""
 "Please insert the ID of your Facebook Page, you want to show the feeds from."
 msgstr ""
 "Bitte gebe hier die ID deiner Facebook Seite ein, von der du die Posts "
 "anzeigen möchtest."
 
-#: ../smn-admin.php:80
+#: ../smn-admin.php:110
 msgid "Your Facebook Page ID"
 msgstr "Deine Facebook Seiten-ID"
 
-#: ../smn-admin.php:84
+#: ../smn-admin.php:114
+msgid "No. of posts"
+msgstr "Anzahl der Beiträge"
+
+#: ../smn-admin.php:119
 msgid "App ID of your Facebook App"
 msgstr "App ID von deiner Facebook App"
 
-#: ../smn-admin.php:88
+#: ../smn-admin.php:123
 msgid "App Secret of your Facebook App"
 msgstr "App Secret von deiner Facebook App"
 
-#: ../smn-admin.php:92
+#: ../smn-admin.php:127
 msgid "The needed information of your Twitter Account can be inserted here."
 msgstr ""
 "Die benötigten Informationen bzgl. deines Twitter Accounts kannst du hier "
 "eintragen."
 
-#: ../smn-admin.php:96
+#: ../smn-admin.php:131
 msgid "Your Twitter Account Name"
 msgstr "Dein Twitter Accountname"
 
-#: ../smn-admin.php:100
-msgid "No. of Tweeds"
+#: ../smn-admin.php:135
+msgid "No. of tweets"
 msgstr "Anzahl der Tweets"
 
-#: ../smn-admin.php:105
+#: ../smn-admin.php:140
 msgid "Consumer Key of your Twitter App"
 msgstr "Consumer Key von deiner Twitter App"
 
-#: ../smn-admin.php:109
+#: ../smn-admin.php:144
 msgid "Consumer Secret of your Twitter App"
 msgstr "Consumer Secret von deiner Twitter App"
 
-#: ../smn-admin.php:113 ../smn-admin.php:117
+#: ../smn-admin.php:148 ../smn-admin.php:152
 msgid "Access Token of your Twitter App"
 msgstr "Access Token von deiner Twitter App"
 
-#: ../smn-admin.php:136
-msgid "SocialMedia News: Settings"
-msgstr "SocialMedia News: Einstellungen"
+#: ../smn-admin.php:168
+msgid "SocialMedia Newsbox: Settings"
+msgstr "SocialMedia Newsbox: Einstellungen"
 
-#: ../smn-admin.php:138
+#: ../smn-admin.php:170
 msgid ""
 "Take your settings and choose which social media network you want to use."
 msgstr ""
 "Mache hier deine Einstellungen und wähle welches Sociale Netzwerk zu nutzen "
 "möchtest."
 
-#: ../smn-admin.php:147
+#: ../smn-admin.php:179
 msgid "Set settings to default"
 msgstr "Einstellungen zurücksetzen"
+
+#: ../smn-admin.php:185
+msgid "Delete the cached news"
+msgstr "Lösche die gecachten News"
 
 #: ../smn-widget.php:14
 msgid "Shows the latest post from the configured social media networks."
 msgstr "Zeigt die letzten Posts der konfigurierten Sozialen Netzwerke an."
 
-#: ../smn-widget.php:80 ../socialmedia-news.php:151
+#: ../smn-widget.php:80
 msgid "SocialMedia News"
 msgstr "SocialMedia News"
 
@@ -127,7 +172,7 @@ msgstr "Facebook"
 msgid "Twitter"
 msgstr "Twitter"
 
-#: ../socialmedia-news.php:88
+#: ../socialmedia-newsbox.php:143
 msgid ""
 "Sorry, but you can't run this plugin, it requires PHP 5.3 or higher and "
 "Wordpress version 3.4.2 or higher."
@@ -135,25 +180,29 @@ msgstr ""
 "Entschuldige, aber das Plugin läuft nicht - es benötigt PHP-Version 5.3 oder "
 "höher und Wordpress-Version 3.4.2 oder höher."
 
-#: ../socialmedia-news.php:117
+#: ../socialmedia-newsbox.php:171
 msgid "installed"
 msgstr "installiert"
 
-#: ../socialmedia-news.php:119
+#: ../socialmedia-newsbox.php:173
 msgid "Please update your configuration!"
 msgstr "Bitte aktualisiere deine Konfiguration!"
 
-#: ../socialmedia-news.php:120 ../socialmedia-news.php:138
+#: ../socialmedia-newsbox.php:174 ../socialmedia-newsbox.php:192
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: ../socialmedia-news.php:123
+#: ../socialmedia-newsbox.php:177
 msgid "Important"
 msgstr "Wichtig"
 
-#: ../socialmedia-news.php:151
-msgid "Settings: SocialMedia News"
-msgstr "Einstellungen: SocialMedia News"
+#: ../socialmedia-newsbox.php:205
+msgid "Settings: SocialMedia Newsbox"
+msgstr "Einstellungen: SocialMedia Newsbox"
+
+#: ../socialmedia-newsbox.php:205
+msgid "SocialMedia Newsbox"
+msgstr "SocialMedia Newsbox"
 
 #~ msgid "Only show servers from specific location"
 #~ msgstr "Zeige nur die Server einer Region"
@@ -205,9 +254,6 @@ msgstr "Einstellungen: SocialMedia News"
 #~ msgstr ""
 #~ "Es wurden keine aktuellen Serverinformationen gefunden. Bitte "
 #~ "aktualisieren Sie später nochmal."
-
-#~ msgid "US Server Settings"
-#~ msgstr "US Server Einstellungen"
 
 #~ msgid "Display Lotro Server: Settings"
 #~ msgstr "Display Lotro Server: Einstellungen"

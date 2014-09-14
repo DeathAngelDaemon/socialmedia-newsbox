@@ -4,10 +4,10 @@
  * Plugin URI: 
  * Description: Showing the last X news from SocialMedia Accounts, like Facebook or Twitter.
  *
- * Version: 0.1
+ * Version: 0.2
  *
  * Author: Anna Fischer
- * Author URI: http://hdroblog.anna-fischer.info/
+ * Author URI: http://www.anna-fischer.info/
  *
  * License: GNU General Public License v2.0
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -26,10 +26,15 @@ class SocialMediaNewsbox {
 
 	private static
 		$arySettings = array(
+			'general' => array(
+				'interval' => 600
+			),
 			'smn_tweet_number' => 1,
 			'smn_fbpost_number' => 1,
 			'shortcode' => true
-		);
+		),
+		$updateCache = true,
+		$is_cache;
 
 	/**
 	* Constructor
@@ -62,6 +67,8 @@ class SocialMediaNewsbox {
 
 		// Load language file
 		load_plugin_textdomain( 'SMNlanguage', false, SMN_LANG_URL );
+
+		self::$is_cache = self::check_cache();
 	}
 
 	/**
@@ -76,6 +83,9 @@ class SocialMediaNewsbox {
         define( 'SMN_PLUGIN_DIR', dirname( plugin_basename( __FILE__ ) ) );
         define( 'SMN_IMAGES_URL', trailingslashit( SMN_PLUGIN_URL . 'img' ) );
         define( 'SMN_LANG_URL', trailingslashit( SMN_PLUGIN_DIR . '/languages' ) );
+        define( 'SMN_CACHE_URL', trailingslashit( WP_PLUGIN_DIR.'/'.SMN_PLUGIN_DIR . '/cache' ) );
+        define( 'SMN_CACHE_FB_URL', WP_PLUGIN_DIR.'/'.SMN_PLUGIN_DIR.'/cache/fb.txt' );
+        define( 'SMN_CACHE_TW_URL', WP_PLUGIN_DIR.'/'.SMN_PLUGIN_DIR.'/cache/tw.txt' );
     }
 
     /**
@@ -97,12 +107,36 @@ class SocialMediaNewsbox {
 		}
     }
 
+    /**
+     * Checks if there is a cache folder already and create a cache file for twitter and facebook.
+     *
+     * @since 0.2
+     * @return bool status of cache-dir and -files
+     */
+    function check_cache() {
+    	if( is_dir(SMN_CACHE_URL) ) {
+			if(!file_exists(SMN_CACHE_FB_URL) || !file_exists(SMN_CACHE_TW_URL)) {
+				$fileFB = @fopen(SMN_CACHE_FB_URL,"wb");
+				if ($fileFB) {
+			        fclose($fileFB);
+			    }
+				$fileTW = @fopen(SMN_CACHE_TW_URL,"wb");
+				if ($fileTW) {
+			        fclose($fileTW);
+			    }
+			    return true;
+			}
+		} else {
+			return false;
+		}
+    }
+
 	/**
 	* Activation of the plugin
 	*
 	* @since 0.1
 	**/
-	function activate() {
+	static function activate() {
 		global $wp_version;
 		if (version_compare(PHP_VERSION, '5.3', '<') && version_compare($wp_version, '3.4', '<')) {
 			deactivate_plugins(SMN_PLUGIN_NAME); // Deactivate ourself
@@ -119,7 +153,7 @@ class SocialMediaNewsbox {
 	* @global wpdb get access to the wordpress-database and to clean it after uninstallation
 	* @since 0.1
 	**/
-	function uninstall() {
+	static function uninstall() {
 		global $wpdb;
 		# delete the options
 		delete_option(self::$optiontag);
@@ -242,7 +276,7 @@ class SocialMediaNewsbox {
 	* @return gives back the latest status post and the name of the social network
 	* @since 0.1
 	**/
-	static function show_newslist($showFB, $showTW) {
+	static function show_newslist($showFB, $showTW, $max_age = 600) {
 
 		$options = get_option( self::$optiontag );
 
@@ -251,11 +285,29 @@ class SocialMediaNewsbox {
 		}
 
 		if($showTW && isset($options['twitter_auth']) && !empty($options['twitter_auth'])) {
-			$tweets = @self::getTwitterAuth($options['twitter_auth']['consumerkey'], 
+			// Check if cache is out-of-date
+			if (file_exists(SMN_CACHE_TW_URL)) {
+				$diffTW = time() - filemtime(SMN_CACHE_TW_URL);
+				if ($diffTW < $max_age) {
+					self::$updateCache = false;
+				}
+			}
+			if(self::$updateCache || filesize(SMN_CACHE_TW_URL) === 0) {
+				$tweets = @self::getTwitterAuth($options['twitter_auth']['consumerkey'], 
 										$options['twitter_auth']['consumersecret'],
 										$options['twitter_auth']['accesstoken'],
 										$options['twitter_auth']['accesssecret'],
 										$options['smn_tweet_number']);
+				if(isset($tweets)) {
+					$tweet_json = json_encode($tweets);
+					$file_tw = fopen(SMN_CACHE_TW_URL, 'wb');
+					fwrite($file_tw, $tweet_json);
+					fclose($file_tw);
+				}
+			} else {
+				$rawtext = file_get_contents(SMN_CACHE_TW_URL);
+				$tweets = json_decode($rawtext);
+			}
 			foreach ($tweets as $key => $tweet) {
 				//Links, Hashtags (#) und Verbindungen (@) verlinken
         		$tweettext = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a target='_blank' href=\"\\0\">\\0</a>",  $tweet->text);
@@ -266,18 +318,35 @@ class SocialMediaNewsbox {
 		}
 
 		if($showFB && isset($options['facebook_auth']) && !empty($options['facebook_auth'])) {
-			$fbAuth = @self::getFacebookAuth($options['facebook_auth']['appid'], $options['facebook_auth']['appsecret'], $options['smn_facebook_id']);
-			# check the facebook graph url
-			$jsonurl = 'https://graph.facebook.com/'.$fbAuth['account']['username'].'/feed?access_token='.$fbAuth['token'];
-			if( self::domainAvailable($jsonurl) ) {
-				$json = file_get_contents($jsonurl,0,null,null);
-				$json_output = json_decode($json);
-				for ($i=0; $i < $options['smn_fbpost_number']; $i++) { 
-					//Links und Hashtags verlinken
-	        		$fbpost = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a target='_blank' href=\"\\0\">\\0</a>",  $json_output->data[$i]->message);
-	        		$fbpost = preg_replace('/(^|\s)#(\w*[a-zA-Z_]+\w*)/', '\1<a target="_blank" href="https://www.facebook.com/hashtag/\2">#\2</a>', $fbpost);
-	        		$postarray[$i] = array('text' => $fbpost, 'date' => $json_output->data[$i]->created_time);
-				}				
+			// Check if cache is out-of-date
+			if (file_exists(SMN_CACHE_FB_URL)) {
+				$diffFB = time() - filemtime(SMN_CACHE_FB_URL);
+				if ($diffFB < $max_age) {
+					self::$updateCache = false;
+				}
+			}
+			if(self::$updateCache || filesize(SMN_CACHE_FB_URL) === 0) {
+				$fbAuth = @self::getFacebookAuth($options['facebook_auth']['appid'], $options['facebook_auth']['appsecret'], $options['smn_facebook_id']);
+				# check the facebook graph url
+				$jsonurl = 'https://graph.facebook.com/'.$fbAuth['account']['username'].'/feed?access_token='.$fbAuth['token'].'&limit='.$options['smn_fbpost_number'];
+				if( self::domainAvailable($jsonurl) ) {
+					$json = file_get_contents($jsonurl,0,null,null);
+					if(isset($json)) {
+						$file_fb = fopen(SMN_CACHE_FB_URL, 'wb');
+						fwrite($file_fb, $json);
+						fclose($file_fb);
+					}
+					$json_output = json_decode($json);
+				}
+			} else {
+				$rawtext = file_get_contents(SMN_CACHE_FB_URL);
+				$json_output = json_decode($rawtext);
+			}
+			for ($i=0; $i < $options['smn_fbpost_number']; $i++) { 
+				//Links und Hashtags verlinken
+        		$fbpost = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a target='_blank' href=\"\\0\">\\0</a>",  $json_output->data[$i]->message);
+        		$fbpost = preg_replace('/(^|\s)#(\w*[a-zA-Z_]+\w*)/', '\1<a target="_blank" href="https://www.facebook.com/hashtag/\2">#\2</a>', $fbpost);
+        		$postarray[$i] = array('text' => $fbpost, 'date' => $json_output->data[$i]->created_time);
 			}
 		}
 

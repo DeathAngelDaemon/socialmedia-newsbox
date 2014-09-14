@@ -35,7 +35,7 @@
 	margin: 10px 5px;
 }
 
-.smn_twitter > p {
+.smn_twitter > p, .smn_facebook > p {
 	margin-bottom: 10px;
 }
 

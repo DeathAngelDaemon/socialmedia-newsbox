@@ -32,15 +32,13 @@ class SocialMediaNewsboxWidget extends WP_Widget {
 		$smn_tw = isset( $instance['smn_tw'] ) ? $instance['smn_tw'] : false;
 
 		echo $before_widget;
-		if ( !empty($title) )
+		if ( ! empty( $title ) )
 			echo $before_title . $title . $after_title;
-		if( !empty($newstext) ) {
-			echo '<div class="smn_intronews">';
-			if($newsdate)
-				echo date('d.m.Y / H:i').' - ';
-			echo $newstext;
-			echo '</div>';
-		}
+		echo '<div class="smn_intronews">';
+		if($newsdate)
+			echo date('d.m.Y / H:i').' - ';
+		echo $newstext;
+		echo '</div>';
 		# output of the newslist
 		echo SocialMediaNewsbox::show_newslist($smn_fb, $smn_tw);
 
@@ -63,6 +61,8 @@ class SocialMediaNewsboxWidget extends WP_Widget {
 		$instance['newsdate'] = $new_instance['newsdate'] ? 1 : 0;
 		$instance['smn_fb'] = $new_instance['smn_fb'] ? 1 : 0;
 		$instance['smn_tw'] = $new_instance['smn_tw'] ? 1 : 0;
+
+		wp_cache_flush();
 
 		return $instance;
 	}

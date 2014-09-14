@@ -30,11 +30,24 @@ class SocialMediaNewsboxGUI extends SocialMediaNewsbox {
 				delete_option('smn_options');
 				parent::check_options();
 				$_POST['notice'] = __( 'The settings are set back to default.', 'SMNlanguage' );
+			} elseif (!empty($_POST['smn_deleteCache'])) {
+				file_put_contents(SMN_CACHE_FB_URL, '');
+				file_put_contents(SMN_CACHE_TW_URL, '');
+				$_POST['notice'] = __( 'The caches are now deleted.', 'SMNlanguage' );
 			} else {
+				foreach ($_POST['smn_general'] as $key => $value) {
+					$options['general'][''.$key.''] = $value;
+				}
 				$options['smn_facebook_id'] = $_POST['smn_fb_feedid'];
-				$options['smn_fbpost_number'] = $_POST['smn_fb_postno'];
+				if($options['smn_fbpost_number'] !== $_POST['smn_fb_postno']) {
+					$options['smn_fbpost_number'] = $_POST['smn_fb_postno'];
+					file_put_contents(SMN_CACHE_FB_URL, '');
+				}
 				$options['smn_twitter_account'] = $_POST['smn_tw_account'];
-				$options['smn_tweet_number'] = $_POST['smn_tw_tweetno'];
+				if($options['smn_tweet_number'] !== $_POST['smn_tw_tweetno']) {
+					$options['smn_tweet_number'] = $_POST['smn_tw_tweetno'];
+					file_put_contents(SMN_CACHE_TW_URL, '');
+				}
 				foreach ($_POST['smn_fb_auth'] as $key => $value) {
 					$options['facebook_auth'][''.$key.''] = $value;
 				}
@@ -53,10 +66,13 @@ class SocialMediaNewsboxGUI extends SocialMediaNewsbox {
 	* @since 0.1
 	*/
 	public function smn_admin_init() {
+		add_settings_section('smn_general_options', __('General Settings', 'SMNlanguage'),  array( 'SocialMediaNewsboxGUI', 'general_section_text' ), 'smn_section');
+			add_settings_field(	'cache_interval', __('Interval of the cache renewal', 'SMNlanguage'), array( 'SocialMediaNewsboxGUI', 'cache_interval_callback'), 'smn_section', 'smn_facebook_options', array( 'label_for' => 'cache_interval' ) );
+
 		add_settings_section('smn_facebook_options', __('Settings: Facebook', 'SMNlanguage'),  array( 'SocialMediaNewsboxGUI', 'facebook_section_text' ), 'smn_section');
 			add_settings_field(	'link_facebook_feed', 'Facebook Page ID / Name', array( 'SocialMediaNewsboxGUI', 'link_check_facebook_callback'), 'smn_section', 'smn_facebook_options', array( 'label_for' => 'link_facebook_feed' ) );
 			add_settings_field(	'fb_post_number', __('Post Number', 'SMNlanguage'), array( 'SocialMediaNewsboxGUI', 'check_fbnumber_callback'), 'smn_section', 'smn_facebook_options', array( 'label_for' => 'fb_post_number' ) );
-			add_settings_field(	'fb_appid', 'Facebook App ID', array( 'SocialMediaNewsboxGUI', 'check_fbappid_callback'), 'smn_section', 'smn_facebook_options', array( 'label_for' => 'link_facebook_feed' ) );
+			add_settings_field(	'fb_appid', 'Facebook App ID', array( 'SocialMediaNewsboxGUI', 'check_fbappid_callback'), 'smn_section', 'smn_facebook_options', array( 'label_for' => 'fb_appid' ) );
 			add_settings_field(	'fb_appsecret', 'Facebook App Secret', array( 'SocialMediaNewsboxGUI', 'check_fbappsecret_callback'), 'smn_section', 'smn_facebook_options', array( 'label_for' => 'fb_appsecret' ) );
 
 		add_settings_section('smn_twitter_options', __('Settings: Twitter', 'SMNlanguage'),  array( 'SocialMediaNewsboxGUI', 'twitter_section_text'), 'smn_section');
@@ -75,6 +91,17 @@ class SocialMediaNewsboxGUI extends SocialMediaNewsbox {
 	   	*
 		* @since 0.1
 	   	*/
+	   	function general_section_text() {
+			echo __('Make some general settings first.', 'SMNlanguage');
+		}
+		function cache_interval_callback() {
+			$options = get_option( parent::$optiontag );
+			echo '<input type="number" min="300" max="3600" step="60" id="cache_interval" name="smn_general[interval]" value="'.((!empty($options['general']['interval'])) ? $options['general']['interval'] : '').'" size="10" />';
+			echo ' <em>Standard: 600 sec (= 10 min)</em>';
+			echo '<br><small>'.__('<strong>Info:</strong> time in seconds for the cache renewal. You can go by steps of 60 sec (= 1 min). Maximum value can be 3600 sec (= 1 hour)', 'SMNlanguage').'</small>';
+			echo '<br><small><strong>'.__('Important: The lower the value the more often the cache have to be reloaded, which increases shortly your site load time.', 'SMNlanguage').'</strong></small>';
+		}
+
 		function facebook_section_text() {
 			echo __('Please insert the ID of your Facebook Page, you want to show the feeds from.', 'SMNlanguage');
 		}
@@ -149,7 +176,13 @@ class SocialMediaNewsboxGUI extends SocialMediaNewsbox {
 		<p>
 	      <label>
 	        <input type="checkbox" name="smn_useDefaults" />
-	        <?php echo __( 'Set settings to default', 'SMNlanguage' ); ?>
+	        <?php _e( 'Set settings to default', 'SMNlanguage' ); ?>
+	      </label>
+	    </p>
+	    <p>
+	      <label>
+	        <input type="checkbox" name="smn_deleteCache" />
+	        <?php _e( 'Delete the cached news', 'SMNlanguage' ); ?>
 	      </label>
 	    </p>
 	    <?php submit_button(NULL,'primary','submit-smn-options'); ?>
